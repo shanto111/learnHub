@@ -1,0 +1,198 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import {
+  FaTachometerAlt,
+  FaBook,
+  FaUsers,
+  FaClipboardList,
+  FaPenFancy,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaChartLine,
+  FaCog,
+  FaBell,
+} from "react-icons/fa";
+
+export default function TeacherDashboardLayout({ children }) {
+  const pathname = usePathname() || "";
+  const router = useRouter();
+
+  const { data: session, status } = useSession();
+  console.log("session", session);
+
+  const TeacherName = session?.user?.name;
+  const role = session?.user?.role;
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push("/login");
+  };
+
+  const navItems = [
+    {
+      href: "/dashboard/teacher",
+      label: "ড্যাশবোর্ড",
+      icon: <FaTachometerAlt />,
+    },
+    {
+      href: "/dashboard/teacher/add-course",
+      label: "Add Course",
+      icon: <FaBook />,
+    },
+    {
+      href: "/dashboard/teacher/my-courses",
+      label: "My Courses",
+      icon: <FaUsers />,
+    },
+    {
+      href: "/dashboard/teacher/assignments",
+      label: "অ্যাসাইনমেন্ট",
+      icon: <FaClipboardList />,
+    },
+    {
+      href: "/dashboard/teacher/exams",
+      label: "পরীক্ষা ও কুইজ",
+      icon: <FaPenFancy />,
+    },
+    {
+      href: "/dashboard/teacher/messages",
+      label: "বার্তা",
+      icon: <FaEnvelope />,
+    },
+    {
+      href: "/dashboard/teacher/calendar",
+      label: "ক্যালেন্ডার",
+      icon: <FaCalendarAlt />,
+    },
+    {
+      href: "/dashboard/teacher/reports",
+      label: "রিপোর্ট",
+      icon: <FaChartLine />,
+    },
+    { href: "/dashboard/teacher/settings", label: "সেটিংস", icon: <FaCog /> },
+  ];
+
+  return (
+    <div className="min-h-screen flex bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-600">
+      {/* Sidebar */}
+      <aside className="w-72 bg-white/95 backdrop-blur-sm shadow-2xl flex flex-col justify-between">
+        <div>
+          <div className="px-6 py-6 border-b">
+            <h1 className="text-2xl font-extrabold text-indigo-600">
+              LearnHub
+            </h1>
+            <p className="text-sm text-gray-500">Teacher Panel</p>
+          </div>
+
+          <nav className="p-4 space-y-2">
+            {navItems.map((item) => {
+              const active =
+                pathname === item.href || pathname.startsWith(item.href + "/");
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                    active
+                      ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg"
+                      : "text-gray-700 hover:bg-white/60"
+                  }`}
+                >
+                  <span
+                    className={`text-lg ${
+                      active ? "opacity-100" : "text-indigo-600"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* bottom user card */}
+        <div className="m-4 p-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg">
+          <div className="flex items-center gap-3">
+            <img
+              src="https://i.pravatar.cc/48?img=12"
+              alt="teacher"
+              className="w-12 h-12 rounded-full border-2 border-white"
+            />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">{TeacherName}</span>
+                <button
+                  onClick={() => {}}
+                  className="text-white/80 text-sm hover:text-white"
+                  title="অপশন"
+                >
+                  ▾
+                </button>
+              </div>
+              <p className="text-xs">{role}</p>
+            </div>
+          </div>
+
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => router.push("/dashboard/teacher/profile")}
+              className="btn btn-ghost btn-sm bg-white/20 text-white flex-1"
+            >
+              Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm bg-red-500 hover:bg-red-600 text-white"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main area */}
+      <main className="flex-1 p-6 overflow-auto">
+        {/* header */}
+        <header className="mb-6">
+          <div className="flex bg-white rounded-xl shadow-md p-6 justify-between items-center gap-4">
+            <div className=" flex-1">
+              <h2 className="text-2xl font-bold">
+                Welcome Back, {TeacherName}!
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                আজ আপনার ৩ টি ক্লাস এবং ৫ টি অ্যাসাইনমেন্ট রিভিউ বসেছে
+              </p>
+            </div>
+
+            <div className="w-60 flex items-center gap-3">
+              <button className="relative btn btn-ghost btn-circle">
+                <FaBell className="text-2xl" />
+              </button>
+
+              <div className=" px-3 py-2  flex items-center gap-3 w-full">
+                <img
+                  src="https://i.pravatar.cc/40?img=12"
+                  alt="me"
+                  className="w-14 h-14 rounded-full"
+                />
+                <div className="flex-1">
+                  <div className="text-2xl font-medium">{TeacherName}</div>
+                  <div className="text-xl text-gray-500">{role}</div>
+                </div>
+                <button className="text-gray-400">▾</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* children (page content) */}
+        <section>{children}</section>
+      </main>
+    </div>
+  );
+}
