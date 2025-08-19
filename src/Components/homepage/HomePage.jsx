@@ -7,7 +7,7 @@ import CategoriesPage from "./Category";
 export default function HomePage() {
   return (
     <section className="min-h-screen">
-      <Navbar></Navbar>
+      {/* <Navbar></Navbar> */}
       <CategoriesPage></CategoriesPage>
       {/* <Banner></Banner> */}
     </section>

@@ -17,12 +17,10 @@ export async function dbConnection() {
   try {
     if (!connectedClient) {
       connectedClient = await client.connect();
-      console.log("Connected to MongoDB successfully");
     }
-    const db = connectedClient.db(process.env.MONGODB_DB);
+    const db = connectedClient.db(process.env.MONGODB_NAME);
     return db;
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
     throw error;
   }
 }

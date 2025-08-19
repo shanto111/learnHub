@@ -1,12 +1,13 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { getSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { FaGoogle } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Swal from "sweetalert2";
 
 export default function LoginPage() {
   const {
@@ -14,28 +15,46 @@ export default function LoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const router = useRouter();
-  const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
-    setLoginError("");
     setLoading(true);
-    const res = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
-    setLoading(false);
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
 
-    if (res?.error) {
-      alert(res.error || "Invalid credentials");
+      if (res?.error) {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: res.error || "Invalid credentials",
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Logged in successfully!",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      router.push("/dashboard");
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+    } finally {
       setLoading(false);
-      return;
-    } else router.push("/dashboard");
-    setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +65,6 @@ export default function LoginPage() {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Email */}
           <div className="relative">
             <input
               type="email"
@@ -71,7 +89,6 @@ export default function LoginPage() {
             )}
           </div>
 
-          {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -95,7 +112,6 @@ export default function LoginPage() {
               Password
             </label>
 
-            {/* Eye Icon */}
             <span
               className="absolute right-3 top-3.5 cursor-pointer text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
@@ -114,24 +130,14 @@ export default function LoginPage() {
             )}
           </div>
 
-          {/* Error */}
-          {loginError && (
-            <p className="text-red-500 text-sm text-center">{loginError}</p>
-          )}
-
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full bg-black text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading && (
-                <svg
-                  className="animate-spin h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -151,25 +157,21 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-
-        {/* Divider */}
         <div className="flex items-center my-6">
           <div className="flex-1 border-t border-gray-300"></div>
           <span className="px-4 text-sm text-gray-500">or</span>
           <div className="flex-1 border-t border-gray-300"></div>
         </div>
 
-        {/* Google Auth Button */}
         <button
           type="button"
-          onClick={() => signIn("google")}
-          className="w-full border border-gray-300 bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center gap-3"
+          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          className="w-full border bg-gray-50 py-3 rounded-lg font-medium hover:bg-gray-100 transition-all flex items-center justify-center gap-3"
         >
-          <FaGoogle className="w-5 h-5 text-green-700" />
-          <span>Continue with Google</span>
+          <FaGoogle className="w-5 h-5 text-[#0F9D58]" />
+          Continue with Google
         </button>
 
-        {/* Link to signup */}
         <p className="text-center text-sm text-gray-600 mt-6">
           Don&apos;t have an account?{" "}
           <Link
