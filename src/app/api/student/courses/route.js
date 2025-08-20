@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
   try {
     const session = await ServerSession();
-    if (!session) {
+    if (!session.user.role === "student") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

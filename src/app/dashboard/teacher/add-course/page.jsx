@@ -174,21 +174,6 @@ export default function AddCoursePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Max Students
-              </label>
-              <input
-                type="number"
-                {...register("totalStudents", { valueAsNumber: true })}
-                className="input input-bordered w-full"
-                placeholder="50"
-                min={0}
-              />
-            </div>
-          </div>
-
           {/* Thumbnail upload */}
           <div>
             <label className="block text-sm font-medium mb-1">

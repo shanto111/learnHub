@@ -41,12 +41,12 @@ export default function StudentDashboardLayout({ children }) {
     {
       href: "/dashboard/student/my-courses",
       label: "My Courses",
-      icon: <FaChalkboardTeacher />,
+      icon: <FaChalkboardTeacher></FaChalkboardTeacher>,
     },
     {
-      href: "/dashboard/student/assignments",
-      label: "Assignments",
-      icon: <FaClipboardList />,
+      href: "/dashboard/student/SupportSection",
+      label: "Support",
+      icon: <FaClipboardList></FaClipboardList>,
     },
     {
       href: "/dashboard/student/exams",
