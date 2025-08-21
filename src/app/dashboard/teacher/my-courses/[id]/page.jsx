@@ -1,16 +1,17 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaPlay, FaPlusCircle, FaTrashAlt, FaFileAlt } from "react-icons/fa";
 import { FiRefreshCw, FiX } from "react-icons/fi";
 import axios from "axios";
 
 export default function ManageLecturerQuiz() {
-  const { id } = useParams(); // courseId
+  const { id } = useParams();
   const [lectures, setLectures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeLecture, setActiveLecture] = useState(null);
+  const router = useRouter();
 
   const fetchLectures = async () => {
     try {
@@ -39,28 +40,30 @@ export default function ManageLecturerQuiz() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-[1980px] mx-auto">
       {/* Header */}
-      <div className="max-w-[1280px] mx-auto rounded-2xl overflow-hidden shadow-lg border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/60 backdrop-blur-sm p-6 md:flex md:items-center md:justify-between gap-6 transition-all duration-300 hover:shadow-xl">
+      <div className=" rounded-2xl overflow-hidden shadow-lg border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-white to-sky-50/60 backdrop-blur-sm p-6 md:flex md:items-center md:justify-between gap-6 transition-all duration-300 hover:shadow-xl">
         <div className="md:flex-1">
           <h1 className="text-3xl font-extrabold text-indigo-800 drop-shadow-sm">
             🎓 Lecturers Dashboard
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            এই পেজ থেকে Lecturer যোগ, Quiz তৈরি ও দ্রুত ওভারভিউ দেখা যাবে
-          </p>
         </div>
 
         <div className="mt-4 md:mt-0 flex gap-3">
           <button
             onClick={() =>
-              (window.location.href = `/dashboard/teacher/my-courses/${id}/add-lecturer`)
+              router.push(`/dashboard/teacher/my-courses/${id}/add-lecturer`)
             }
             className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-medium shadow hover:shadow-lg hover:scale-105 transition flex items-center gap-2"
           >
             <FaPlusCircle size={18} /> Add Lecturer
           </button>
-          <button className="px-4 py-2 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-700 font-medium shadow hover:bg-yellow-100 hover:scale-105 transition flex items-center gap-2">
+          <button
+            onClick={() =>
+              router.push(`/dashboard/teacher/my-courses/${id}/add-quiz`)
+            }
+            className="px-4 py-2 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-700 font-medium shadow hover:bg-yellow-100 hover:scale-105 transition flex items-center gap-2"
+          >
             <FaFileAlt size={18} /> Add Quiz
           </button>
           <button
@@ -73,7 +76,7 @@ export default function ManageLecturerQuiz() {
       </div>
 
       {/* Lectures List */}
-      <div className="max-w-[1280px] mx-auto  gap-6">
+      <div className=" gap-6">
         <div className="md:col-span-2 bg-white/90 backdrop-blur-md border rounded-2xl shadow-sm p-5 hover:shadow-md transition">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
@@ -87,7 +90,7 @@ export default function ManageLecturerQuiz() {
           {loading ? (
             <p className="text-gray-500">Loading...</p>
           ) : lectures.length === 0 ? (
-            <p className="text-gray-500">এই কোর্সে কোনো লেকচার নেই।</p>
+            <p className="text-gray-500">No lecturer added</p>
           ) : (
             <div className="space-y-3 max-w-full mx-auto">
               {lectures.map((lec) => (
@@ -109,9 +112,6 @@ export default function ManageLecturerQuiz() {
                       className="text-sm px-3 py-1 rounded bg-indigo-50 border text-indigo-700 flex items-center gap-1 hover:bg-indigo-100 transition"
                     >
                       <FaPlay size={14} /> Watch
-                    </button>
-                    <button className="text-sm px-3 py-1 rounded bg-yellow-50 border text-yellow-700 flex items-center gap-1 hover:bg-yellow-100 transition">
-                      <FaFileAlt size={14} /> Quiz
                     </button>
                     <button
                       onClick={() => handleDelete(lec._id)}

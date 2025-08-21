@@ -20,13 +20,11 @@ export default function MyCoursesPage() {
   });
 
   const calcProgress = (course) => {
-    // Prefer server-provided enrollment.progress (safe-guard & cap to 100)
     const enrollment = course.enrollment || {};
     if (typeof enrollment.progress === "number") {
       return Math.min(100, Math.max(0, Math.round(enrollment.progress)));
     }
 
-    // Fallback: count completedLectures vs course.lectures (if available)
     const lectures = Array.isArray(course.lectures) ? course.lectures : [];
     const completed = Array.isArray(enrollment.completedLectures)
       ? new Set(enrollment.completedLectures.map(String))
@@ -107,7 +105,7 @@ export default function MyCoursesPage() {
               <div className="mt-4">
                 <div className="flex justify-between items-center mb-1">
                   <div className="text-sm text-gray-600">Progress</div>
-                  <div className="text-sm font-medium text-gray-700">
+                  <div className="text-sm font-medium text-black">
                     {progress}%
                   </div>
                 </div>
@@ -140,7 +138,6 @@ export default function MyCoursesPage() {
 
                 <button
                   onClick={() => {
-                    // adjust certificate route if you use different path
                     window.location.href = `/dashboard/student/certificate/${course._id}`;
                   }}
                   disabled={progress < 100}

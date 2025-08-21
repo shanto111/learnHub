@@ -9,27 +9,23 @@ import {
 } from "react-icons/fa";
 
 export default function TeacherDashboardPage() {
-  // sample numbers & content - replace with real data from API
   const stats = [
     {
-      icon: <FaGraduationCap />,
-      title: "মোট শিক্ষার্থী",
+      icon: <FaGraduationCap></FaGraduationCap>,
+      title: "Total Enrrol Student",
       value: "১২৮",
-      sub: "+ ১০% এই মাসে",
     },
     {
-      icon: <FaBookOpen />,
-      title: "সক্রিয় কোর্স",
+      icon: <FaBookOpen></FaBookOpen>,
+      title: "Total Course",
       value: "৬",
-      sub: "+ ২ নতুন কোর্স",
     },
     {
-      icon: <FaClipboard />,
-      title: "পেন্ডিং অ্যাসাইনমেন্ট",
+      icon: <FaClipboard></FaClipboard>,
+      title: "Total Quiz",
       value: "২৪",
-      sub: "রিভিউ প্রয়োজন",
     },
-    { icon: <FaStar />, title: "গড় রেটিং", value: "৪.৮", sub: "+ ০.৩ উন্নতি" },
+    { icon: <FaStar></FaStar>, title: "Total Revenu", value: "833" },
   ];
 
   const recentCourses = [
@@ -51,13 +47,6 @@ export default function TeacherDashboardPage() {
       weeks: 8,
       status: "প্রস্তুত",
     },
-  ];
-
-  const activities = [
-    "রাহুল দাশ ক্লাসক্লাস অ্যাসাইনমেন্ট জমা দিয়েছেন — ১৫ মিনিট আগে",
-    "৫ জন নতুন শিক্ষার্থী ক্লাসে ভর্তি হয়েছে — ২ ঘন্টা আগে",
-    "সামরা খান একটি প্রশ্ন পোস্ট করেছেন — ৪ ঘন্টা আগে",
-    "আপনি ১০টি অ্যাসাইনমেন্ট গ্রেড করেছেন — ৬ ঘন্টা আগে",
   ];
 
   return (

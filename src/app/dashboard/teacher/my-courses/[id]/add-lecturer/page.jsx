@@ -16,9 +16,8 @@ export default function AddLecturerPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+  const MAX_SIZE_BYTES = 50 * 1024 * 1024;
 
-  // --- ফাংশন: ফর্ম সাবমিট (ভিডিও আপলোড) ---
   const onSubmit = async (data) => {
     setMessage("");
     setError("");
@@ -80,16 +79,14 @@ export default function AddLecturerPage() {
   // --- UI ---
   return (
     <div className="max-w-3xl mx-auto p-6">
-      {/* Card */}
       <div className="bg-gradient-to-br from-white to-indigo-50 border border-indigo-100 rounded-2xl shadow-lg p-6">
         <h1 className="text-2xl font-bold text-indigo-700 mb-2 text-center">
-          📚 Lecturer ম্যানেজার
+          📚 Lecturer
         </h1>
         <p className="text-sm text-gray-600 mb-4 text-center">
           Course ID: <span className="font-semibold text-indigo-600">{id}</span>
         </p>
 
-        {/* Upload Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -108,7 +105,7 @@ export default function AddLecturerPage() {
             </label>
             <input
               {...register("lecturerName", { required: true })}
-              placeholder="Lecturer এর নাম লিখুন"
+              placeholder="Lecturer name"
               className="w-full border border-indigo-200 p-3 rounded-lg focus:ring-2 focus:ring-indigo-300"
             />
           </div>
@@ -123,7 +120,7 @@ export default function AddLecturerPage() {
               {...register("video", { required: true })}
               className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer"
             />
-            <p className="text-xs text-gray-500 mt-1">📏 নিরাপদ সাইজ: ≤ 50MB</p>
+            <p className="text-xs text-gray-500 mt-1">📏 Max Size: ≤ 50MB</p>
           </div>
 
           <div className="flex items-center justify-center gap-3">

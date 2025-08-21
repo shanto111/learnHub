@@ -172,10 +172,10 @@ export default function TeacherCourses() {
                     Duration: {course.durationWeeks ?? "—"} w
                   </span>
                   <span className="px-2 py-1 rounded-md bg-base-200">
-                    Max students: {course.totalStudents ?? 0}
+                    Enroll students: {course.totalStudents ?? 0}
                   </span>
                   <span className="px-2 py-1 rounded-md bg-base-200">
-                    Price: {fmtPrice(course.price)}
+                    Price: $ {course.price}
                   </span>
                 </div>
 
@@ -192,18 +192,6 @@ export default function TeacherCourses() {
                       className="btn btn-sm btn-outline"
                     >
                       Manage lecturer and quiz
-                    </button>
-
-                    {/* Add lecturer - navigate */}
-                    <button
-                      onClick={() =>
-                        router.push(
-                          `/dashboard/teacher/my-courses/${course._id}/add-lecturer`
-                        )
-                      }
-                      className="btn btn-sm btn-outline"
-                    >
-                      add lecturer
                     </button>
                   </div>
 

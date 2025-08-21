@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { FaPlayCircle, FaLock, FaClock, FaCheckCircle } from "react-icons/fa";
+import { FaPlayCircle, FaLock, FaCheckCircle } from "react-icons/fa";
 
 export default function CourseLecturesPage() {
   const { id: courseId } = useParams();
   const [activeLecture, setActiveLecture] = useState(null);
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
 
-  // --- fetch course meta (lectures + enrollment) ---
+  const router = useRouter();
+
   const {
-    data = [],
+    data: rawData,
     isLoading,
     error,
   } = useQuery({
@@ -23,58 +24,62 @@ export default function CourseLecturesPage() {
       return res.data;
     },
     enabled: !!courseId,
-    staleTime: 1000 * 60, // optional: 1min
   });
 
-  // normalize data (your API returns array like [ { lectures: [...], enrollment: {...} } ])
-  const meta = Array.isArray(data) ? data[0] || {} : data || {};
-  const lectures = Array.isArray(meta.lectures) ? meta.lectures : [];
-  const enrollment = meta.enrollment || { completedLectures: [], progress: 0 };
+  const lectures = (() => {
+    if (!rawData)
+      return {
+        course: {},
+        lectures: [],
+        enrollment: { progress: 0, completedLectures: [] },
+      };
+    if (Array.isArray(rawData)) {
+      if (rawData.length && rawData[0] && Array.isArray(rawData[0].lectures)) {
+        return rawData[0].lectures;
+      }
+      return rawData; // assume it's already lectures array
+    }
+    // rawData is object
+    if (Array.isArray(rawData.lectures)) return rawData.lectures;
+    return [];
+  })();
 
-  // create Set of completed ids (strings) to avoid type mismatch issues
-  const completedSet = new Set(
-    (enrollment.completedLectures || []).map(String)
-  );
+  const enrollment = (() => {
+    if (!rawData) return { progress: 0, completedLectures: [] };
+    if (Array.isArray(rawData) && rawData[0] && rawData[0].enrollment)
+      return rawData[0].enrollment;
+    if (rawData.enrollment) return rawData.enrollment;
+    return { progress: 0, completedLectures: [] };
+  })();
 
-  // compute completedCount only counting lectures that belong to this course
-  const completedCount = lectures.reduce(
-    (acc, lec) => acc + (completedSet.has(String(lec._id)) ? 1 : 0),
-    0
-  );
-  const totalCount = lectures.length;
-  let progress = totalCount
-    ? Math.round((completedCount / totalCount) * 100)
-    : 0;
-  if (progress < 0) progress = 0;
-  if (progress > 100) progress = 100;
+  const completedLectures = (enrollment.completedLectures || []).map(String);
+  const progress = enrollment.progress ?? 0;
 
-  // mark-complete mutation (v5 object signature)
+  // auto-select first lecture after lectures load
+  useEffect(() => {
+    if (!activeLecture && lectures.length) setActiveLecture(lectures[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lectures]);
+
+  // mark-complete mutation
   const markComplete = useMutation({
-    mutationFn: (lectureId) =>
-      axios.post(`/api/student/courses/${courseId}/progress`, { lectureId }),
-    onSuccess: () => {
-      // refetch latest meta (including updated enrollment)
-      qc.invalidateQueries({ queryKey: ["course-lectures", courseId] });
+    mutationFn: async (lectureId) => {
+      const res = await axios.post(
+        `/api/student/courses/${courseId}/lectures/${current._id}`
+      );
+
+      return res.data;
     },
-    onError: (err) => {
-      console.error("Mark complete failed:", err);
+    onSuccess: () => {
+      queryClient.invalidateQueries(["course-lectures", courseId]);
     },
   });
 
-  // current lecture to play
-  const current = activeLecture || lectures[0] || null;
-
-  const handleComplete = (lectureId) => {
-    if (!lectureId) return;
-    if (completedSet.has(String(lectureId))) return; // already done
-    markComplete.mutate(lectureId);
-  };
-
-  const formatDuration = (sec) => {
-    if (!sec) return "00:00";
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}:${String(s).padStart(2, "0")}`;
+  const onVideoEnd = (lec) => {
+    if (!lec) return;
+    const id = String(lec._id);
+    if (completedLectures.includes(id)) return;
+    markComplete.mutate(id);
   };
 
   if (isLoading) return <div className="p-6">Loading lectures...</div>;
@@ -82,9 +87,10 @@ export default function CourseLecturesPage() {
     return <div className="p-6 text-red-600">Error loading lectures</div>;
   if (!lectures.length) return <div className="p-6">No lectures yet</div>;
 
+  const current = activeLecture || lectures[0];
+
   return (
     <div className="p-4 lg:flex gap-6">
-      {/* Main video area */}
       <div className="flex-1 bg-white p-4 rounded shadow">
         <div className="flex justify-between items-start mb-3">
           <div>
@@ -92,53 +98,35 @@ export default function CourseLecturesPage() {
               <FaPlayCircle className="text-blue-600" />
               {current?.title || "Select a lecture"}
             </h2>
-            <p className="text-sm text-gray-500">{meta.title || ""}</p>
+            <p className="text-sm text-gray-500">
+              {/* optional course title */}
+            </p>
           </div>
 
-          <div className="text-right">
-            <div className="text-xs text-gray-500">Progress</div>
-            <div className="w-36 bg-gray-200 rounded-full h-2 overflow-hidden mt-1">
+          <div className="w-48">
+            <div className="text-xs mb-1">Course progress: {progress}%</div>
+            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div
-                className="h-2 rounded-full bg-blue-500 transition-all"
-                style={{ width: `${progress}%` }}
+                className="h-2 rounded-full transition-all"
+                style={{
+                  width: `${progress}%`,
+                  background: progress === 100 ? "#16a34a" : "#2563eb",
+                }}
               />
-            </div>
-            <div className="text-sm text-gray-600 mt-1">{progress}%</div>
-            <div className="text-xs text-gray-500 mt-1">
-              {completedCount} / {totalCount} completed
             </div>
           </div>
         </div>
 
         {current ? (
-          <>
-            <video
-              key={String(current._id)} // force reload on lecture change
-              controls
-              onEnded={() => handleComplete(current._id)}
-              className="w-full rounded-md bg-black"
-              preload="metadata"
-            >
-              <source src={current.videoUrl} type="video/mp4" />
-              Your browser does not support the video element.
-            </video>
-
-            <div className="mt-3 flex items-center gap-3">
-              {completedSet.has(String(current._id)) ? (
-                <div className="flex items-center gap-2 text-green-600">
-                  <FaCheckCircle /> Completed
-                </div>
-              ) : (
-                <button
-                  onClick={() => handleComplete(current._id)}
-                  disabled={markComplete.isLoading}
-                  className="px-3 py-1 border rounded hover:bg-gray-50"
-                >
-                  {markComplete.isLoading ? "Saving..." : "Mark as complete"}
-                </button>
-              )}
-            </div>
-          </>
+          <video
+            key={String(current._id)}
+            controls
+            className="w-full rounded-md bg-black"
+            preload="metadata"
+            onEnded={() => onVideoEnd(current)}
+          >
+            <source src={current.videoUrl} type="video/mp4" />
+          </video>
         ) : (
           <div className="py-12 text-center text-gray-500">
             Please select a lecture from the list.
@@ -146,7 +134,6 @@ export default function CourseLecturesPage() {
         )}
       </div>
 
-      {/* Chapters list */}
       <aside className="w-full lg:w-80 bg-white p-4 rounded shadow">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <FaPlayCircle className="text-green-600" /> Chapters
@@ -154,13 +141,13 @@ export default function CourseLecturesPage() {
 
         <div className="space-y-2 max-h-[70vh] overflow-auto">
           {lectures.map((lec, idx) => {
-            const done = completedSet.has(String(lec._id));
+            const isCompleted = completedLectures.includes(String(lec._id));
             return (
               <div
                 key={String(lec._id)}
                 onClick={() => setActiveLecture(lec)}
                 className={`flex justify-between items-center p-2 rounded cursor-pointer border ${
-                  done
+                  isCompleted
                     ? "bg-green-50 border-green-200"
                     : "hover:bg-gray-50 border-gray-100"
                 }`}
@@ -174,21 +161,26 @@ export default function CourseLecturesPage() {
                   </div>
                 </div>
 
-                <div className="text-sm text-gray-600 flex items-center gap-2">
-                  <span>{formatDuration(lec.durationSec)}</span>
-                  <span>
-                    {done ? (
-                      <FaCheckCircle className="text-green-500" />
-                    ) : lec.isFreePreview ? (
-                      "▶"
-                    ) : (
-                      <FaLock />
-                    )}
-                  </span>
+                <div className="text-sm">
+                  {isCompleted ? (
+                    <FaCheckCircle className="text-green-600" />
+                  ) : (
+                    <FaLock className="text-gray-400" />
+                  )}
                 </div>
               </div>
             );
           })}
+        </div>
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => {
+              router.push(`dashboard/student/my-courses/${courseId}/quiz`);
+            }}
+            className="btn btn-primary btn-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+          >
+            Start Quiz
+          </button>
         </div>
       </aside>
     </div>

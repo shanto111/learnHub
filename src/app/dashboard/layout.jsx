@@ -12,7 +12,6 @@ export default function DashboardLayout({ children }) {
     if (status === "authenticated") {
       const role = session?.user?.role;
 
-      // যদি শুধু /dashboard এ থাকে
       if (pathname === "/dashboard") {
         if (role === "admin") {
           router.push("/dashboard/admin");
@@ -21,7 +20,6 @@ export default function DashboardLayout({ children }) {
         } else if (role === "student") {
           router.push("/dashboard/student");
         } else {
-          // কোনো unknown role থাকলে লগইন পেজে redirect
           router.push("/login");
         }
       }

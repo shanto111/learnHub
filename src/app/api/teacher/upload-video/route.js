@@ -51,6 +51,7 @@ export async function POST(req) {
     const lectureItem = {
       _id: new ObjectId(),
       title,
+      lecturerName,
       durationSec,
       isFreePreview,
       videoUrl,
@@ -68,7 +69,6 @@ export async function POST(req) {
         $setOnInsert: {
           courseId: new ObjectId(courseId),
           order,
-          allowedStudents: [],
         },
       },
       { upsert: true }

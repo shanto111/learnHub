@@ -11,7 +11,6 @@ export default function DashboardPage() {
   useEffect(() => {
     if (status === "loading") return;
 
-    // যদি user login না করে থাকে
     if (status === "unauthenticated") {
       router.replace("/login");
       return;
@@ -26,7 +25,6 @@ export default function DashboardPage() {
     } else if (role === "student") {
       router.replace("/dashboard/student");
     } else {
-      // unknown role
       router.replace("/login");
     }
   }, [session, status, router]);

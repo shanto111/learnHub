@@ -161,9 +161,7 @@ export default function AddCoursePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Price (BDT)
-              </label>
+              <label className="block text-sm font-medium mb-1">Price</label>
               <input
                 type="number"
                 {...register("price", { valueAsNumber: true })}
@@ -218,7 +216,7 @@ export default function AddCoursePage() {
                 reset();
                 setThumbnailLink(null);
               }}
-              className="btn btn-ghost"
+              className="btn btn-outline"
             >
               Reset
             </button>

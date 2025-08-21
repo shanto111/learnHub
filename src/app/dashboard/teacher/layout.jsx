@@ -34,50 +34,48 @@ export default function TeacherDashboardLayout({ children }) {
   const navItems = [
     {
       href: "/dashboard/teacher",
-      label: "ড্যাশবোর্ড",
-      icon: <FaTachometerAlt />,
+      label: "Dashboard",
+      icon: <FaTachometerAlt></FaTachometerAlt>,
     },
     {
       href: "/dashboard/teacher/add-course",
       label: "Add Course",
-      icon: <FaBook />,
+      icon: <FaBook></FaBook>,
     },
     {
       href: "/dashboard/teacher/my-courses",
       label: "My Courses",
-      icon: <FaUsers />,
+      icon: <FaUsers></FaUsers>,
     },
     {
-      href: "/dashboard/teacher/assignments",
-      label: "অ্যাসাইনমেন্ট",
-      icon: <FaClipboardList />,
-    },
-    {
-      href: "/dashboard/teacher/exams",
-      label: "পরীক্ষা ও কুইজ",
-      icon: <FaPenFancy />,
+      href: "/dashboard/teacher/Marks",
+      label: "Marks",
+      icon: <FaPenFancy></FaPenFancy>,
     },
     {
       href: "/dashboard/teacher/messages",
-      label: "বার্তা",
-      icon: <FaEnvelope />,
+      label: "Messsage",
+      icon: <FaEnvelope></FaEnvelope>,
     },
     {
       href: "/dashboard/teacher/calendar",
-      label: "ক্যালেন্ডার",
-      icon: <FaCalendarAlt />,
+      label: "Calendar",
+      icon: <FaCalendarAlt></FaCalendarAlt>,
     },
     {
       href: "/dashboard/teacher/reports",
-      label: "রিপোর্ট",
-      icon: <FaChartLine />,
+      label: "Report",
+      icon: <FaChartLine></FaChartLine>,
     },
-    { href: "/dashboard/teacher/settings", label: "সেটিংস", icon: <FaCog /> },
+    {
+      href: "/dashboard/teacher/settings",
+      label: "Settings",
+      icon: <FaCog></FaCog>,
+    },
   ];
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-600">
-      {/* Sidebar */}
       <aside className="w-72 bg-white/95 backdrop-blur-sm shadow-2xl flex flex-col justify-between">
         <div>
           <div className="px-6 py-6 border-b">
@@ -115,7 +113,6 @@ export default function TeacherDashboardLayout({ children }) {
           </nav>
         </div>
 
-        {/* bottom user card */}
         <div className="m-4 p-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg">
           <div className="flex items-center gap-3">
             <img
@@ -164,9 +161,6 @@ export default function TeacherDashboardLayout({ children }) {
               <h2 className="text-2xl font-bold">
                 Welcome Back, {TeacherName}!
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                আজ আপনার ৩ টি ক্লাস এবং ৫ টি অ্যাসাইনমেন্ট রিভিউ বসেছে
-              </p>
             </div>
 
             <div className="w-60 flex items-center gap-3">

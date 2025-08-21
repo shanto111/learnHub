@@ -20,7 +20,6 @@ export default function StudentDashboardLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname() || "";
   const { data: session, status } = useSession();
-  console.log("session", session);
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -50,34 +49,33 @@ export default function StudentDashboardLayout({ children }) {
     },
     {
       href: "/dashboard/student/exams",
-      label: "Exams & Quizzes",
-      icon: <FaPenFancy />,
+      label: "Quizzes",
+      icon: <FaPenFancy></FaPenFancy>,
     },
     {
       href: "/dashboard/student/messages",
       label: "Messages",
-      icon: <FaEnvelope />,
+      icon: <FaEnvelope></FaEnvelope>,
     },
     {
       href: "/dashboard/student/calendar",
       label: "Calendar",
-      icon: <FaCalendarAlt />,
+      icon: <FaCalendarAlt></FaCalendarAlt>,
     },
     {
       href: "/dashboard/student/progress",
       label: "Progress Report",
-      icon: <FaChartLine />,
+      icon: <FaChartLine></FaChartLine>,
     },
     {
       href: "/dashboard/student/settings",
       label: "Settings",
-      icon: <FaCog />,
+      icon: <FaCog></FaCog>,
     },
   ];
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-600">
-      {/* Sidebar */}
       <aside className="w-80 bg-white shadow-lg flex flex-col justify-between border-r">
         <div>
           <h1 className="text-2xl font-bold px-6 py-4 border-b">LearnHub</h1>
@@ -108,8 +106,6 @@ export default function StudentDashboardLayout({ children }) {
             })}
           </nav>
         </div>
-
-        {/* User info + Logout */}
         <div className="m-4 p-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg">
           <div className="flex items-center gap-3">
             <img
@@ -119,11 +115,11 @@ export default function StudentDashboardLayout({ children }) {
             />
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold">nmae</span>
+                <span className="font-semibold">name</span>
                 <button
                   onClick={() => {}}
                   className="text-white/80 text-sm hover:text-white"
-                  title="অপশন"
+                  title="option"
                 >
                   ▾
                 </button>
@@ -151,7 +147,6 @@ export default function StudentDashboardLayout({ children }) {
 
       {/* Main content */}
       <main className="flex-1 p-6">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-bold">Welcome back, Alex!</h2>
@@ -166,11 +161,7 @@ export default function StudentDashboardLayout({ children }) {
                 <span className="indicator-item badge badge-error"></span>
               </span>
             </button>
-            <img
-              src="https://i.pravatar.cc/40"
-              alt="user"
-              className="rounded-full border"
-            />
+            <img src="user.jpg" alt="user" className="rounded-full border" />
           </div>
         </div>
 
