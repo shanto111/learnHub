@@ -117,18 +117,7 @@ export default function TeacherDashboardPage() {
         {/* Right: Recent activity */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h3 className="text-lg font-semibold mb-4">সাম্প্রতিক কার্যক্রম</h3>
-          <ul className="space-y-3">
-            {activities.map((a, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <div className="mt-1">
-                  <FaCircle className="text-indigo-400 text-xs" />
-                </div>
-                <div>
-                  <div className="text-sm">{a}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <ul className="space-y-3">activities</ul>
         </div>
       </div>
 

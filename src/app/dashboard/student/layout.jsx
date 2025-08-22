@@ -53,8 +53,8 @@ export default function StudentDashboardLayout({ children }) {
       icon: <FaPenFancy></FaPenFancy>,
     },
     {
-      href: "/dashboard/student/messages",
-      label: "Messages",
+      href: "/dashboard/student/payment-history",
+      label: "Payment History",
       icon: <FaEnvelope></FaEnvelope>,
     },
     {

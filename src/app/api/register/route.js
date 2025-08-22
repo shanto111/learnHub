@@ -11,15 +11,13 @@ export async function POST(req) {
       return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
 
-    // allowed roles (consistent with your app)
     const allowed = ["student", "teacher", "admin"];
     if (!allowed.includes(role)) {
       return NextResponse.json({ message: "Invalid role" }, { status: 400 });
     }
-    const db = await dbConnection(); // uses DB from connection string
+    const db = await dbConnection();
     const users = db.collection("users");
 
-    // check existing email
     const exists = await users.findOne({ email: email.toLowerCase() });
     if (exists) {
       return NextResponse.json(
@@ -34,7 +32,7 @@ export async function POST(req) {
       name,
       email: email.toLowerCase(),
       password: hashed,
-      role, // store role as string: "student"|"teacher"|"admin"
+      role,
       createdAt: new Date(),
     };
 

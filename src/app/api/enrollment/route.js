@@ -1,4 +1,3 @@
-// app/api/enrollment/route.js
 import { NextResponse } from "next/server";
 import { dbConnection } from "@/utils/dbConnection";
 import Stripe from "stripe";
@@ -17,17 +16,8 @@ export async function POST(req) {
       );
     }
 
-    // DB connect - dbConnection should return the DB instance (client.db("yourDB"))
     const db = await dbConnection();
-    if (!db) {
-      console.error("DB connection failed");
-      return NextResponse.json(
-        { success: false, error: "DB connection failed" },
-        { status: 500 }
-      );
-    }
 
-    // Verify payment session with Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     if (!session) {
       return NextResponse.json(
@@ -43,8 +33,9 @@ export async function POST(req) {
       );
     }
 
-    // Idempotency: check existing enrollment by sessionId
     const enrollmentsColl = db.collection("enrollments");
+    const paymentsColl = db.collection("payments");
+
     const existing = await enrollmentsColl.findOne({ sessionId });
     if (existing) {
       return NextResponse.json({
@@ -54,7 +45,6 @@ export async function POST(req) {
       });
     }
 
-    // Build enrollment object (take metadata from session)
     const enrollmentData = {
       userEmail:
         session.customer_details?.email || session.customer_email || "",
@@ -69,12 +59,22 @@ export async function POST(req) {
     };
 
     const result = await enrollmentsColl.insertOne(enrollmentData);
-
-    // attach inserted id (for convenience)
     enrollmentData._id = result.insertedId;
 
+    const paymentData = {
+      sessionId,
+      studentId: enrollmentData.studentId,
+      courseId: enrollmentData.courseId,
+      email: enrollmentData.userEmail,
+      amount: enrollmentData.amount,
+      currency: session.currency,
+      status: session.payment_status,
+      createdAt: new Date(),
+    };
+    await paymentsColl.insertOne(paymentData);
+
     return NextResponse.json(
-      { success: true, enrollment: enrollmentData },
+      { success: true, enrollment: enrollmentData, payment: paymentData },
       { status: 201 }
     );
   } catch (error) {

@@ -1,10 +1,17 @@
-// app/admin/page.jsx
-
-export const metadata = {
-  title: "Admin Panel",
-};
+"use client";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function AdminDashboardPage() {
+  const [stats, setStats] = useState({ totalUsers: 0, totalCourses: 0 });
+
+  useEffect(() => {
+    axios
+      .get("/api/admin/stats")
+      .then((res) => setStats(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <div className="min-h-screen bg-base-200">
       {/* Drawer layout */}
@@ -13,52 +20,6 @@ export default function AdminDashboardPage() {
 
         {/* Main content */}
         <div className="drawer-content flex flex-col">
-          {/* Topbar */}
-          <div className="navbar bg-base-100 shadow-md px-4">
-            <div className="flex-1">
-              <label htmlFor="admin-drawer" className="btn btn-ghost lg:hidden">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </label>
-              <span className="text-xl font-bold">Admin Panel</span>
-            </div>
-            <div className="flex-none gap-2">
-              <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                  <div className="w-10 rounded-full">
-                    <img src="https://i.pravatar.cc/100" alt="user" />
-                  </div>
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
-                >
-                  <li>
-                    <a>Profile</a>
-                  </li>
-                  <li>
-                    <a>Settings</a>
-                  </li>
-                  <li>
-                    <a>Logout</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
           {/* Page Content */}
           <main className="p-6 space-y-6">
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
@@ -67,13 +28,15 @@ export default function AdminDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="stat bg-base-100 shadow rounded-xl">
                 <div className="stat-title">Total Users</div>
-                <div className="stat-value text-primary">1,200</div>
-                <div className="stat-desc">↗︎ 120 this month</div>
+                <div className="stat-value text-primary">
+                  {stats.totalUsers}
+                </div>
               </div>
               <div className="stat bg-base-100 shadow rounded-xl">
                 <div className="stat-title">Courses</div>
-                <div className="stat-value text-secondary">85</div>
-                <div className="stat-desc">↗︎ 8 new</div>
+                <div className="stat-value text-secondary">
+                  {stats.totalCourses}
+                </div>
               </div>
               <div className="stat bg-base-100 shadow rounded-xl">
                 <div className="stat-title">Revenue</div>
@@ -129,33 +92,6 @@ export default function AdminDashboardPage() {
               </div>
             </div>
           </main>
-        </div>
-
-        {/* Sidebar */}
-        <div className="drawer-side z-40">
-          <label
-            htmlFor="admin-drawer"
-            aria-label="close sidebar"
-            className="drawer-overlay"
-          ></label>
-          <ul className="menu p-4 w-72 min-h-full bg-base-100 shadow-lg">
-            <li className="mb-2 text-xl font-bold">Menu</li>
-            <li>
-              <a>Dashboard</a>
-            </li>
-            <li>
-              <a>Users</a>
-            </li>
-            <li>
-              <a>Courses</a>
-            </li>
-            <li>
-              <a>Payments</a>
-            </li>
-            <li>
-              <a>Reports</a>
-            </li>
-          </ul>
         </div>
       </div>
     </div>

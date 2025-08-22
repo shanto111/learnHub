@@ -1,94 +1,184 @@
-// app/admin/layout.jsx
-export const metadata = {
-  title: "Admin Panel",
-};
+"use client";
 
-export default function AdminLayout({ children }) {
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import {
+  FaTachometerAlt,
+  FaBook,
+  FaUsers,
+  FaClipboardList,
+  FaPenFancy,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaChartLine,
+  FaCog,
+  FaBell,
+} from "react-icons/fa";
+
+export default function AdminDashboardLayout({ children }) {
+  const pathname = usePathname() || "";
+  const router = useRouter();
+
+  const { data: session, status } = useSession();
+  console.log("session", session);
+
+  const AdminName = session?.user?.name;
+  const role = session?.user?.role;
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push("/login");
+  };
+
+  const navItems = [
+    {
+      href: "/dashboard/admin",
+      label: "Dashboard",
+      icon: <FaTachometerAlt></FaTachometerAlt>,
+    },
+    {
+      href: "/dashboard/admin/manage-course",
+      label: "All Courses",
+      icon: <FaBook></FaBook>,
+    },
+    {
+      href: "/dashboard/admin/manage-users",
+      label: "Manage User",
+      icon: <FaUsers></FaUsers>,
+    },
+    {
+      href: "/dashboard/admin/payment",
+      label: "Payment History",
+      icon: <FaPenFancy></FaPenFancy>,
+    },
+    {
+      href: "/dashboard/admin/support",
+      label: "Support Message",
+      icon: <FaEnvelope></FaEnvelope>,
+    },
+    {
+      href: "/dashboard/teacher/calendar",
+      label: "Calendar",
+      icon: <FaCalendarAlt></FaCalendarAlt>,
+    },
+    {
+      href: "/dashboard/teacher/settings",
+      label: "Settings",
+      icon: <FaCog></FaCog>,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-base-200">
-      {/* Drawer layout */}
-      <div className="drawer lg:drawer-open">
-        <input id="admin-drawer" type="checkbox" className="drawer-toggle" />
+    <div className="min-h-screen flex bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-600">
+      <aside className="w-72 bg-white/95 backdrop-blur-sm shadow-2xl flex flex-col justify-between">
+        <div>
+          <div className="px-6 py-6 border-b">
+            <h1 className="text-2xl font-extrabold text-indigo-600">
+              LearnHub
+            </h1>
+            <p className="text-sm text-gray-500">Admin Panel</p>
+          </div>
 
-        {/* Main content */}
-        <div className="drawer-content flex flex-col">
-          {/* Topbar */}
-          <div className="navbar bg-base-100 shadow-md px-4">
-            <div className="flex-1">
-              <label htmlFor="admin-drawer" className="btn btn-ghost lg:hidden">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+          <nav className="p-4 space-y-2">
+            {navItems.map((item, idx) => {
+              const href = item.href ?? `#${idx}`;
+              const active =
+                pathname === href ||
+                pathname.startsWith(href.endsWith("/") ? href : href + "/");
+
+              return (
+                <Link
+                  key={`${href}-${idx}`}
+                  href={href}
+                  className={`flex items-center gap-3 p-3 rounded-lg transition-all`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </label>
-              <span className="text-xl font-bold">Admin Panel</span>
-            </div>
-            <div className="flex-none gap-2">
-              <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                  <div className="w-10 rounded-full">
-                    <img src="https://i.pravatar.cc/100" alt="user" />
-                  </div>
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+                  <span
+                    className={`text-lg ${
+                      active ? "opacity-100" : "text-indigo-600"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="m-4 p-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg">
+          <div className="flex items-center gap-3">
+            <img
+              src="https://i.pravatar.cc/48?img=12"
+              alt="teacher"
+              className="w-12 h-12 rounded-full border-2 border-white"
+            />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">{AdminName}</span>
+                <button
+                  onClick={() => {}}
+                  className="text-white/80 text-sm hover:text-white"
+                  title="অপশন"
                 >
-                  <li>
-                    <a>Profile</a>
-                  </li>
-                  <li>
-                    <a>Settings</a>
-                  </li>
-                  <li>
-                    <a>Logout</a>
-                  </li>
-                </ul>
+                  ▾
+                </button>
               </div>
+              <p className="text-xs">{role}</p>
             </div>
           </div>
 
-          {/* Page content slot */}
-          <main className="p-6 space-y-6">{children}</main>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => router.push("/dashboard/teacher/profile")}
+              className="btn btn-ghost btn-sm bg-white/20 text-white flex-1"
+            >
+              Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm bg-red-500 hover:bg-red-600 text-white"
+            >
+              Logout
+            </button>
+          </div>
         </div>
+      </aside>
 
-        {/* Sidebar */}
-        <div className="drawer-side z-40">
-          <label
-            htmlFor="admin-drawer"
-            aria-label="close sidebar"
-            className="drawer-overlay"
-          ></label>
-          <ul className="menu p-4 w-72 min-h-full bg-base-100 shadow-lg">
-            <li className="mb-2 text-xl font-bold">Menu</li>
-            <li>
-              <a href="/admin">Dashboard</a>
-            </li>
-            <li>
-              <a href="/admin/users">Users</a>
-            </li>
-            <li>
-              <a href="/admin/courses">Courses</a>
-            </li>
-            <li>
-              <a href="/admin/payments">Payments</a>
-            </li>
-            <li>
-              <a href="/admin/reports">Reports</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      {/* Main area */}
+      <main className="flex-1 p-6 overflow-auto">
+        {/* header */}
+        <header className="mb-6">
+          <div className="flex bg-white rounded-xl shadow-md p-6 justify-between items-center gap-4">
+            <div className=" flex-1">
+              <h2 className="text-2xl font-bold">Welcome Back, {AdminName}!</h2>
+            </div>
+
+            <div className="w-60 flex items-center gap-3">
+              <button className="relative btn btn-ghost btn-circle">
+                <FaBell className="text-2xl" />
+              </button>
+
+              <div className=" px-3 py-2  flex items-center gap-3 w-full">
+                <img
+                  src="https://i.pravatar.cc/40?img=12"
+                  alt="me"
+                  className="w-14 h-14 rounded-full"
+                />
+                <div className="flex-1">
+                  <div className="text-2xl font-medium">{AdminName}</div>
+                  <div className="text-xl text-gray-500">{role}</div>
+                </div>
+                <button className="text-gray-400">▾</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* children (page content) */}
+        <section>{children}</section>
+      </main>
     </div>
   );
 }
