@@ -11,10 +11,21 @@ export async function GET() {
     }
 
     const db = await dbConnection();
+
     const totalUsers = await db.collection("users").countDocuments();
     const totalCourses = await db.collection("courses").countDocuments();
 
-    return NextResponse.json({ totalUsers, totalCourses });
+    const paymentsAgg = await db
+      .collection("payments")
+      .aggregate([
+        { $match: { status: "paid" } },
+        { $group: { _id: null, total: { $sum: "$amount" } } },
+      ])
+      .toArray();
+
+    const totalRevenue = paymentsAgg.length > 0 ? paymentsAgg[0].total : 0;
+
+    return NextResponse.json({ totalUsers, totalCourses, totalRevenue });
   } catch (error) {
     return NextResponse.json(
       { message: "Something went wrong", error: error.message },

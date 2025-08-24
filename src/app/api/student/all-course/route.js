@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
 import { dbConnection } from "@/utils/dbConnection";
 
 export async function GET(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.role !== "student") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
     const db = await dbConnection();
 
     const courses = await db.collection("courses").find().toArray();

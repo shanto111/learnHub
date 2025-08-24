@@ -3,15 +3,16 @@
 const nextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: "100mb", // Adjust the limit as needed
+      bodySizeLimit: "100mb",
     },
   },
   images: {
-    formats: ["image/webp"], // avif বাদ দেওয়া আছে
+    domains: ["img.daisyui.com"],
+    formats: ["image/webp"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "i.ibb.co", // external image host allow করা হলো
+        hostname: "i.ibb.co",
       },
     ],
   },

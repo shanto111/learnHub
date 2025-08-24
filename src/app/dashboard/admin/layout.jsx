@@ -14,6 +14,7 @@ import {
   FaChartLine,
   FaCog,
   FaBell,
+  FaSearch,
 } from "react-icons/fa";
 
 export default function AdminDashboardLayout({ children }) {
@@ -21,7 +22,6 @@ export default function AdminDashboardLayout({ children }) {
   const router = useRouter();
 
   const { data: session, status } = useSession();
-  console.log("session", session);
 
   const AdminName = session?.user?.name;
   const role = session?.user?.role;
@@ -71,7 +71,7 @@ export default function AdminDashboardLayout({ children }) {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-600">
-      <aside className="w-72 bg-white/95 backdrop-blur-sm shadow-2xl flex flex-col justify-between">
+      <aside className="w-72 bg-white/95 backdrop-blur-sm shadow-2xl  flex flex-col justify-between">
         <div>
           <div className="px-6 py-6 border-b">
             <h1 className="text-2xl font-extrabold text-indigo-600">
@@ -146,31 +146,42 @@ export default function AdminDashboardLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main area */}
       <main className="flex-1 p-6 overflow-auto">
-        {/* header */}
         <header className="mb-6">
-          <div className="flex bg-white rounded-xl shadow-md p-6 justify-between items-center gap-4">
-            <div className=" flex-1">
-              <h2 className="text-2xl font-bold">Welcome Back, {AdminName}!</h2>
+          <div className="flex bg-white rounded-2xl shadow-lg px-6 py-4 justify-between items-center gap-6">
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Welcome Back,
+                <span className="text-indigo-600">{AdminName}!</span>
+              </h2>
             </div>
 
-            <div className="w-60 flex items-center gap-3">
-              <button className="relative btn btn-ghost btn-circle">
-                <FaBell className="text-2xl" />
+            <div className="flex-1 max-w-md hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 shadow-sm">
+              <FaSearch className="text-gray-400 mr-2" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
+              />
+            </div>
+
+            <div className="flex items-center gap-5">
+              <button className="relative p-2 rounded-full hover:bg-gray-100 transition">
+                <FaBell className="w-6 h-6 text-gray-600" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
 
-              <div className=" px-3 py-2  flex items-center gap-3 w-full">
-                <img
-                  src="https://i.pravatar.cc/40?img=12"
-                  alt="me"
-                  className="w-14 h-14 rounded-full"
-                />
-                <div className="flex-1">
-                  <div className="text-2xl font-medium">{AdminName}</div>
-                  <div className="text-xl text-gray-500">{role}</div>
+              <div className="flex items-center gap-3 bg-gray-50 px-3 py-2 rounded-xl cursor-pointer hover:shadow-md transition">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-indigo-500 text-white text-xl font-semibold shadow">
+                  T
                 </div>
-                <button className="text-gray-400">▾</button>
+                <div className="hidden sm:block">
+                  <div className="text-lg font-medium text-gray-800">
+                    {AdminName}
+                  </div>
+                  <div className="text-sm text-gray-500">{role}</div>
+                </div>
+                <button className="text-gray-400 text-xl">▾</button>
               </div>
             </div>
           </div>

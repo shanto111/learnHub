@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Navbar from "./Shared/Navbar";
+import Footer from "./Shared/Footer";
 
 export default function NoHeaderFooter({ children }) {
   const { data: session, status } = useSession();
@@ -17,6 +18,7 @@ export default function NoHeaderFooter({ children }) {
     <div>
       {!isDashboardRole && <Navbar></Navbar>}
       <main className="min-h-screen">{children}</main>
+      {!isDashboardRole && <Footer></Footer>}
     </div>
   );
 }

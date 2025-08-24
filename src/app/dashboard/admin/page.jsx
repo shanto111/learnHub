@@ -3,7 +3,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState({ totalUsers: 0, totalCourses: 0 });
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalCourses: 0,
+    totalRevenue: 0,
+  });
 
   useEffect(() => {
     axios
@@ -13,14 +17,11 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-base-200">
-      {/* Drawer layout */}
+    <div className="min-h-screen bg-base-200 rounded-xl">
       <div className="drawer lg:drawer-open">
         <input id="admin-drawer" type="checkbox" className="drawer-toggle" />
 
-        {/* Main content */}
         <div className="drawer-content flex flex-col">
-          {/* Page Content */}
           <main className="p-6 space-y-6">
             <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
 
@@ -39,9 +40,10 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <div className="stat bg-base-100 shadow rounded-xl">
-                <div className="stat-title">Revenue</div>
-                <div className="stat-value text-accent">$32.5k</div>
-                <div className="stat-desc">↗︎ 15% from last month</div>
+                <div className="stat-title">Total Revenue</div>
+                <div className="stat-value text-accent">
+                  $ {stats.totalRevenue}
+                </div>
               </div>
             </div>
 
