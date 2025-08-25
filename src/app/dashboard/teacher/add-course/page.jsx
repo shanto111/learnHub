@@ -81,7 +81,6 @@ export default function AddCoursePage() {
         <h1 className="text-2xl font-bold mb-4">Add Course</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Title */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Course Title *
@@ -101,7 +100,6 @@ export default function AddCoursePage() {
             )}
           </div>
 
-          {/* Short description */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Short Description *
@@ -123,7 +121,6 @@ export default function AddCoursePage() {
             )}
           </div>
 
-          {/* Long description */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Long Description
@@ -136,7 +133,7 @@ export default function AddCoursePage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Category</label>
               <input
@@ -144,19 +141,6 @@ export default function AddCoursePage() {
                 {...register("category")}
                 className="input input-bordered w-full"
                 placeholder="Mathematics, Science, Programming..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Duration (weeks)
-              </label>
-              <input
-                type="number"
-                {...register("durationWeeks", { valueAsNumber: true })}
-                className="input input-bordered w-full"
-                placeholder="12"
-                min={0}
               />
             </div>
 
@@ -172,11 +156,8 @@ export default function AddCoursePage() {
             </div>
           </div>
 
-          {/* Thumbnail upload */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Thumbnail (optional)
-            </label>
+            <label className="block text-sm font-medium mb-1">Thumbnail</label>
             <input
               type="file"
               accept="image/*"

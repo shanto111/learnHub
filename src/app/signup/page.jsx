@@ -1,22 +1,35 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaGoogle } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { signIn } from "next-auth/react";
 
 export default function SignupPage() {
+  const searchParams = useSearchParams();
+  const roleParam = searchParams?.get("role") || "student";
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      role: roleParam,
+    },
+  });
+
+  const [role, setRole] = useState(roleParam);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setValue("role", role);
+  }, [role, setValue]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -29,7 +42,8 @@ export default function SignupPage() {
       );
       reset();
       router.push("/login");
-    } catch {
+    } catch (err) {
+      console.error(err);
       Swal.fire("Error!", "Signup failed. Please try again.", "error");
     } finally {
       setLoading(false);
@@ -89,26 +103,6 @@ export default function SignupPage() {
             )}
           </div>
 
-          <div>
-            <select
-              className={`w-full px-3 py-3 border rounded-lg focus:ring-2 focus:ring-gray-800 outline-none ${
-                errors.role ? "border-red-500" : "border-gray-300"
-              }`}
-              {...register("role", { required: "Role is required" })}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select Role
-              </option>
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-            </select>
-            {errors.role && (
-              <p className="text-red-500 text-sm">{errors.role.message}</p>
-            )}
-          </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -129,7 +123,9 @@ export default function SignupPage() {
 
         <button
           type="button"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={() => {
+            signIn("google", { callbackUrl: `/dashboard?role=${role}` });
+          }}
           className="w-full border bg-gray-50 py-3 rounded-lg font-medium hover:bg-gray-100 transition-all flex items-center justify-center gap-3"
         >
           <FaGoogle className="w-5 h-5 text-[#0F9D58]" />

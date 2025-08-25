@@ -156,35 +156,39 @@ export default function TeacherDashboardLayout({ children }) {
       <main className="flex-1 p-6 overflow-auto">
         {/* header */}
         <header className="mb-6">
-          <div className="flex bg-white rounded-xl shadow-md p-6 justify-between items-center gap-4">
-            <div className=" flex-1">
-              <h2 className="text-2xl font-bold">
+          <div className="flex bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-2 justify-between items-center gap-6 border border-gray-100">
+            <div className="flex-1 flex items-center gap-6">
+              <h2 className="text-2xl font-bold text-gray-800">
                 Welcome Back, {TeacherName}!
               </h2>
+
+              <div className="relative w-80">
+                <input
+                  type="text"
+                  placeholder="🔍  Search courses, students..."
+                  className="w-full pl-4 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition duration-300 placeholder:text-gray-400 text-gray-700"
+                />
+              </div>
             </div>
 
-            <div className="w-60 flex items-center gap-3">
-              <button className="relative btn btn-ghost btn-circle">
-                <FaBell className="text-2xl" />
+            <div className="flex items-center gap-5">
+              <button className="relative p-3 rounded-full bg-white/80 shadow-md hover:shadow-lg hover:bg-gray-50 transition duration-300">
+                <FaBell className="text-xl text-gray-600" />
+
+                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
               </button>
 
-              <div className=" px-3 py-2  flex items-center gap-3 w-full">
+              <div className="flex items-center px-3 py-2 ">
                 <img
-                  src="https://i.pravatar.cc/40?img=12"
+                  src="https://i.pravatar.cc/100?img=12"
                   alt="me"
-                  className="w-14 h-14 rounded-full"
+                  className="w-12 h-12 rounded-full border-2 border-gray-200"
                 />
-                <div className="flex-1">
-                  <div className="text-2xl font-medium">{TeacherName}</div>
-                  <div className="text-xl text-gray-500">{role}</div>
-                </div>
-                <button className="text-gray-400">▾</button>
               </div>
             </div>
           </div>
         </header>
 
-        {/* children (page content) */}
         <section>{children}</section>
       </main>
     </div>

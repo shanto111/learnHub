@@ -18,12 +18,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full">
       <div className="flex items-center justify-between px-6 lg:px-12 py-3  shadow-md">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2 select-none">
-          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/20 font-extrabold text-lg">
-            EL
-          </div>
-          <span className="text-xl font-bold">EduLearn</span>
+          <span className="text-xl font-bold text-indigo-950">LearnHub</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -42,11 +38,11 @@ export default function Navbar() {
           <form className="hidden md:flex items-center bg-white/10 rounded-full px-3 py-1 backdrop-blur-sm">
             <input
               placeholder="Search..."
-              className="bg-transparent text-sm outline-none text-white placeholder-gray-200 px-2"
+              className="bg-transparent text-sm outline-none  placeholder-gray-950 px-2"
             />
             <button
               type="submit"
-              className="p-1 rounded-full hover:bg-white/20 transition"
+              className="p-1 text-black rounded-fulltransition"
             >
               <FaSearch size={14} />
             </button>
@@ -60,13 +56,12 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/become-teacher"
+            href={`/signup?role=teacher`}
             className="hidden md:block px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 font-semibold shadow hover:bg-yellow-300 transition"
           >
             Become a Teacher
           </Link>
 
-          {/* Mobile Menu Toggle */}
           <button
             className="md:hidden p-2 rounded-md hover:bg-white/20"
             onClick={() => setIsOpen((s) => !s)}
@@ -76,7 +71,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Nav */}
       {isOpen && (
         <div className="md:hidden bg-white text-gray-800 border-t shadow-lg">
           <div className="px-6 py-4 space-y-4">
@@ -111,7 +105,7 @@ export default function Navbar() {
               </Link>
 
               <Link
-                href="/become-teacher"
+                href={`/signup?role=teacher`}
                 onClick={() => setIsOpen(false)}
                 className="px-3 py-2 rounded-md bg-yellow-400 text-gray-900 text-center font-semibold"
               >

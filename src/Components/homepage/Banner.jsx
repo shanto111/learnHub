@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   FaProjectDiagram,
@@ -7,15 +7,67 @@ import {
   FaChalkboardTeacher,
   FaUserGraduate,
 } from "react-icons/fa";
+import axios from "axios";
 
 export default function Banner() {
-  const imageSrc =
-    "https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp";
+  const [statsCounts, setStatsCounts] = useState({
+    totalCourses: null,
+    totalTeachers: null,
+    totalStudents: null,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("/api/summary")
+      .then((res) => {
+        if (res.data.success) {
+          setStatsCounts(res.data.data);
+        } else {
+          setStatsCounts({
+            totalCourses: 0,
+            totalTeachers: 0,
+            totalStudents: 0,
+          });
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setStatsCounts({
+          totalCourses: 0,
+          totalTeachers: 0,
+          totalStudents: 0,
+        });
+        setLoading(false);
+      });
+  }, []);
 
   const stats = [
-    { label: "Total Courses", value: "320+", icon: <FaChalkboardTeacher /> },
-    { label: "Teachers", value: "85", icon: <FaUserGraduate /> },
-    { label: "Students", value: "12k+", icon: <FaCertificate /> },
+    {
+      label: "Total Courses",
+      value:
+        loading || statsCounts.totalCourses === null
+          ? "..."
+          : String(statsCounts.totalCourses),
+      icon: <FaChalkboardTeacher />,
+    },
+    {
+      label: "Teachers",
+      value:
+        loading || statsCounts.totalTeachers === null
+          ? "..."
+          : String(statsCounts.totalTeachers),
+      icon: <FaUserGraduate />,
+    },
+    {
+      label: "Students",
+      value:
+        loading || statsCounts.totalStudents === null
+          ? "..."
+          : String(statsCounts.totalStudents),
+      icon: <FaCertificate />,
+    },
   ];
 
   return (
@@ -62,7 +114,7 @@ export default function Banner() {
           <div className="relative">
             <div className="rounded-2xl overflow-hidden shadow-2xl transform transition hover:scale-[1.02]">
               <Image
-                src={imageSrc}
+                src={`/images/bannerImg.webp`}
                 alt="Students learning"
                 width={600}
                 height={520}
